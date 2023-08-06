@@ -1,0 +1,22 @@
+{
+  "name": "sunken-serpentines-generator",
+  "version": "1.0.0",
+  "description": "Tile based map generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hsynercn/sunken-serpentines-generator.git"
+  },
+  "keywords": [
+    "map-generation"
+  ],
+  "author": "Huseyin Can Ercan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hsynercn/sunken-serpentines-generator/issues"
+  },
+  "homepage": "https://github.com/hsynercn/sunken-serpentines-generator#readme"
+}
