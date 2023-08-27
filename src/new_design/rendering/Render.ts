@@ -8,13 +8,14 @@ export function renderTileGraph(tileNodes: TileNode [][]) {
     const canvas = createCanvas(3 * tileSize * tileNodes.length, 3 * tileSize * tileNodes[0].length);
     const ctx = canvas.getContext("2d");
 
-    const wallColor = "black";
-    const floorColor = "lightgray";
+    const wallColor = "lightgray";
+    const floorColor = "black";
+    const nodeCenter = "blue";
 
     for(let x = 0; x < tileNodes.length; x++) {
         for(let y = 0; y < tileNodes[x].length; y++) {
             const tileNode = tileNodes[x][y];
-            ctx.fillStyle = floorColor;
+            ctx.fillStyle = nodeCenter;
             ctx.fillRect((3*x + 1) * tileSize, (3*y + 1) * tileSize, tileSize, tileSize);
 
             ctx.fillStyle = wallColor;
