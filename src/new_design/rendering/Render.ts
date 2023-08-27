@@ -5,18 +5,47 @@ import { generateEmptyMazeGraph, generateMaze } from "../TileAreaGenerator";
 
 export function renderTileGraph(tileNodes: TileNode [][]) {
     const tileSize = 1;
-    const canvas = createCanvas(tileSize * tileNodes.length, tileSize * tileNodes[0].length);
+    const canvas = createCanvas(3 * tileSize * tileNodes.length, 3 * tileSize * tileNodes[0].length);
     const ctx = canvas.getContext("2d");
+
+    const wallColor = "black";
+    const floorColor = "lightgray";
 
     for(let x = 0; x < tileNodes.length; x++) {
         for(let y = 0; y < tileNodes[x].length; y++) {
             const tileNode = tileNodes[x][y];
-            if(tileNode.tileType === "wall") {
-                ctx.fillStyle = "black";
-            } else {
-                ctx.fillStyle = "lightgray";
+            ctx.fillStyle = floorColor;
+            ctx.fillRect((3*x + 1) * tileSize, (3*y + 1) * tileSize, tileSize, tileSize);
+
+            ctx.fillStyle = wallColor;
+            ctx.fillRect((3*x) * tileSize, (3*y) * tileSize, tileSize, tileSize);
+            ctx.fillRect((3*x + 2) * tileSize, (3*y) * tileSize, tileSize, tileSize);
+            ctx.fillRect((3*x) * tileSize, (3*y + 2) * tileSize, tileSize, tileSize);
+            ctx.fillRect((3*x + 2) * tileSize, (3*y + 2) * tileSize, tileSize, tileSize);
+
+            ctx.fillStyle = wallColor;
+            if(tileNode.connections.find(connection => connection.x === tileNode.x - 1)) {
+                ctx.fillStyle = floorColor;
             }
-            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+
+            ctx.fillRect((3*x) * tileSize, (3*y + 1) * tileSize, tileSize, tileSize);
+            ctx.fillStyle = wallColor;
+            if(tileNode.connections.find(connection => connection.x === tileNode.x + 1)) {
+                ctx.fillStyle = floorColor;
+            }
+
+            ctx.fillRect((3*x + 2) * tileSize, (3*y + 1) * tileSize, tileSize, tileSize);
+            ctx.fillStyle = wallColor;
+            if(tileNode.connections.find(connection => connection.y === tileNode.y - 1)) {
+                ctx.fillStyle = floorColor;
+            }
+
+            ctx.fillRect((3*x + 1) * tileSize, (3*y) * tileSize, tileSize, tileSize);
+            ctx.fillStyle = wallColor;
+            if(tileNode.connections.find(connection => connection.y === tileNode.y + 1)) {
+                ctx.fillStyle = floorColor;
+            }
+            ctx.fillRect((3*x + 1) * tileSize, (3*y + 2) * tileSize, tileSize, tileSize);
         }
     }
 
@@ -58,8 +87,8 @@ export const printMaze = (maze: TileNode[][]) => {
   };
 
 //const area = generateEmptyMazeGraph(2000, 2000);
-//const area = generateMaze(10, 10);
-//renderTileGraph(area);
+const area = generateMaze(100, 100);
+renderTileGraph(area);
 
-const area = generateMaze(10, 10);
-printMaze(area);
+//const area = generateMaze(10, 10);
+//printMaze(area);
