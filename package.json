@@ -18,5 +18,11 @@
   "bugs": {
     "url": "https://github.com/hsynercn/sunken-serpentines-generator/issues"
   },
-  "homepage": "https://github.com/hsynercn/sunken-serpentines-generator#readme"
+  "homepage": "https://github.com/hsynercn/sunken-serpentines-generator#readme",
+  "dependencies": {
+    "canvas": "^2.11.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.6"
+  }
 }
