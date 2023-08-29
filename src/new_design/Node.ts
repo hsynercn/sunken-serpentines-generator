@@ -1,7 +1,7 @@
-export class Node {
+export class GraphNode {
   public x: number;
   public y: number;
-  public connections: Node[];
+  public connections: GraphNode[];
 
   constructor(x: number, y: number) {
     this.x = x;

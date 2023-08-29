@@ -1,8 +1,8 @@
 import { Tile } from "./Tile";
-import { Node } from "./Node";
+import { GraphNode } from "./Node";
 
-export class TileNode extends Node {
-  public readonly tileType: TileType;
+export class TileNode extends GraphNode {
+  public tileType: TileType;
 
   constructor(x: number, y: number, tileType: TileType) {
     super(x, y);

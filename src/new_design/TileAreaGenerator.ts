@@ -1,32 +1,85 @@
 import { LcgGenerator } from "./LcgGenerator";
+import { GraphNode } from "./Node";
+import { Tile } from "./Tile";
 import { TileNode, TileType } from "./TileNode";
 
 export type NewConnection = {
-    node: TileNode;
-    previousNode: TileNode;
+    node: GraphNode;
+    previousNode: GraphNode;
 };
 
-export function generateEmptyMazeGraph(
+export function generateEmptyGraph(
     sizeX: number,
     sizeY: number
-): TileNode[][] {
-    const maze: TileNode[][] = [];
+): GraphNode[][] {
+    const graph: GraphNode[][] = [];
     for (let x = 0; x < sizeX; x++) {
-        maze[x] = [];
+        graph[x] = [];
         for (let y = 0; y < sizeY; y++) {
-            maze[x][y] = new TileNode(x, y, TileType.floor);
+            graph[x][y] = new GraphNode(x, y);
         }
     }
-    return maze;
+    return graph;
+}
+
+export function generateEmptyTileGraph(
+    sizeX: number,
+    sizeY: number,
+    wallType: TileType = TileType.wall,
+): TileNode[][] {
+    const graph: TileNode[][] = [];
+    for (let x = 0; x < sizeX; x++) {
+        graph[x] = [];
+        for (let y = 0; y < sizeY; y++) {
+            graph[x][y] = new TileNode(x, y, wallType);
+        }
+    }
+    return graph;
 }
 
 //export const generator = new LcgGenerator(3819201);
 
-export function generateMaze(sizeX: number, sizeY: number) {
-    const maze = generateEmptyMazeGraph(sizeX, sizeY);
+export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, stepDistance: number) {
+    const graph = generateMazeGraph(sizeX, sizeY);
+    const tileSizeX = sizeX + (sizeX - 1) * stepDistance + 2;
+    const tileSizeY = sizeY + (sizeY - 1) * stepDistance + 2;
+    const tileGraph = generateEmptyTileGraph(tileSizeX, tileSizeY);
+    graph.forEach((column, x) => {
+        column.forEach((node, y) => {
+            const tileCordX = 1 + x + stepDistance * x;
+            const tileCordY = 1 + y + stepDistance * y;
+            const tileNode = tileGraph[tileCordX][tileCordY];
+            tileNode.tileType = TileType.floor;
+            const hasEastConnection = node.connections.find(connection => connection.x === node.x + 1);
+            const hasSouthConnection = node.connections.find(connection => connection.y === node.y + 1);
+            if(hasEastConnection) {
+                for(let i = 0; i <= stepDistance; i++) {
+                    const tempTile = tileGraph[tileCordX + i][tileCordY];
+                    const nextTile = tileGraph[tileCordX + i + 1][tileCordY];
+                    tempTile.tileType = TileType.floor;
+                    tempTile.connections.push(nextTile);
+                    nextTile.connections.push(tempTile);
+                }
+            }
+            if(hasSouthConnection) {
+                for(let i = 0; i <= stepDistance; i++) {
+                    const tempTile = tileGraph[tileCordX][tileCordY + i];
+                    const nextTile = tileGraph[tileCordX][tileCordY + i + 1];
+                    tempTile.tileType = TileType.floor;
+                    tempTile.connections.push(nextTile);
+                    nextTile.connections.push(tempTile);
+                }
+            }
+        });
+    });
+    return tileGraph;
+}
+
+export function generateMazeGraph(sizeX: number, sizeY: number) {
+    const maze = generateEmptyGraph(sizeX, sizeY);
     const lcgGenerator = new LcgGenerator(3819201);
 
-    const visitedNodes: Set<TileNode> = new Set<TileNode>();
+    const visitedNodes: Set<GraphNode> = new Set<GraphNode>();
 
     const randomStartPointX = lcgGenerator.nextInt() % sizeX;
     const randomStartPointY = lcgGenerator.nextInt() % sizeY;
@@ -60,7 +113,7 @@ export function generateMaze(sizeX: number, sizeY: number) {
             const eastNode = maze[node.x + 1]?.[node.y];
             const westNode = maze[node.x - 1]?.[node.y];
 
-            let unvisitedConNodes: TileNode[] = [];
+            let unvisitedConNodes: GraphNode[] = [];
             if (northNode && !visitedNodes.has(northNode)) {
                 unvisitedConNodes.push(northNode);
             }

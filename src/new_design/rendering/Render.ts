@@ -1,20 +1,21 @@
 import { createCanvas, loadImage } from "canvas";
 import fs from "fs";
-import { TileNode } from "../TileNode";
-import { generateEmptyMazeGraph, generateMaze } from "../TileAreaGenerator";
+import { TileNode, TileType } from "../TileNode";
+import { generateEmptyGraph, generateMazeGraph, generateTileMazeWithStepDistance } from "../TileAreaGenerator";
+import { GraphNode } from "../Node";
 
-export function renderTileGraph(tileNodes: TileNode [][]) {
-    const tileSize = 1;
-    const canvas = createCanvas(3 * tileSize * tileNodes.length, 3 * tileSize * tileNodes[0].length);
+const tileSize = 1;
+const wallColor = "lightgray";
+const floorColor = "black";
+const nodeCenter = "blue";
+
+export function renderNodeGraphWithSpacing(graphNodes: GraphNode [][]) {
+    const canvas = createCanvas(3 * tileSize * graphNodes.length, 3 * tileSize * graphNodes[0].length);
     const ctx = canvas.getContext("2d");
 
-    const wallColor = "lightgray";
-    const floorColor = "black";
-    const nodeCenter = "blue";
-
-    for(let x = 0; x < tileNodes.length; x++) {
-        for(let y = 0; y < tileNodes[x].length; y++) {
-            const tileNode = tileNodes[x][y];
+    for(let x = 0; x < graphNodes.length; x++) {
+        for(let y = 0; y < graphNodes[x].length; y++) {
+            const tileNode = graphNodes[x][y];
             ctx.fillStyle = nodeCenter;
             ctx.fillRect((3*x + 1) * tileSize, (3*y + 1) * tileSize, tileSize, tileSize);
 
@@ -55,7 +56,27 @@ export function renderTileGraph(tileNodes: TileNode [][]) {
     fs.writeFileSync("./image.png", buffer);
 }
 
-export const printMaze = (maze: TileNode[][]) => {
+export const renderTileGraph = (tileGraph: TileNode[][]) => {
+  const canvas = createCanvas(tileSize * tileGraph.length, tileSize * tileGraph[0].length);
+    const ctx = canvas.getContext("2d");
+  tileGraph.forEach((column, x) => {
+    column.forEach((node, y) => {
+
+      if(node.tileType === TileType.floor) {
+        ctx.fillStyle = floorColor;
+      } else {
+        ctx.fillStyle = wallColor;
+      }
+
+      ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+
+    });
+  });
+  const buffer = canvas.toBuffer("image/png");
+    fs.writeFileSync("./tile_image.png", buffer);
+}
+
+export const renderGraph = (maze: GraphNode[][]) => {
     const sizeY = maze[0].length;
     maze.forEach(row => {
       let rowStringTop = '';
@@ -88,8 +109,11 @@ export const printMaze = (maze: TileNode[][]) => {
   };
 
 //const area = generateEmptyMazeGraph(2000, 2000);
-const area = generateMaze(100, 100);
-renderTileGraph(area);
+//const area = generateMazeGraph(100, 100);
+//renderNodeGraphWithSpacing(area);
+
+const tileGraph = generateTileMazeWithStepDistance(10,10,8);
+renderTileGraph(tileGraph);
 
 //const area = generateMaze(10, 10);
 //printMaze(area);
