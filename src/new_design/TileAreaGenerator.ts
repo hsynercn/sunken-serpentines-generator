@@ -39,15 +39,15 @@ export function generateEmptyTileGraph(
 
 //export const generator = new LcgGenerator(3819201);
 
-export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, stepDistance: number) {
+export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, stepDistance: number, frameThickness: number = 1) {
     const graph = generateMazeGraph(sizeX, sizeY);
-    const tileSizeX = sizeX + (sizeX - 1) * stepDistance + 2;
-    const tileSizeY = sizeY + (sizeY - 1) * stepDistance + 2;
+    const tileSizeX = sizeX + (sizeX - 1) * stepDistance + 2 * frameThickness;
+    const tileSizeY = sizeY + (sizeY - 1) * stepDistance + 2 * frameThickness;
     const tileGraph = generateEmptyTileGraph(tileSizeX, tileSizeY);
     graph.forEach((column, x) => {
         column.forEach((node, y) => {
-            const tileCordX = 1 + x + stepDistance * x;
-            const tileCordY = 1 + y + stepDistance * y;
+            const tileCordX = frameThickness + x + stepDistance * x;
+            const tileCordY = frameThickness + y + stepDistance * y;
             const tileNode = tileGraph[tileCordX][tileCordY];
             tileNode.tileType = TileType.floor;
             const hasEastConnection = node.connections.find(connection => connection.x === node.x + 1);
