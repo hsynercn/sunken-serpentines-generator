@@ -99,6 +99,42 @@ export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, n
     return tileGraph;
 }
 
+export function createSpiralGraph() {
+    const maze = generateEmptyGraph(5, 5);
+    maze[0][0].connections.push(maze[0][1], maze[1][0]);
+    maze[0][1].connections.push(maze[0][0], maze[0][2]);
+    maze[0][2].connections.push(maze[0][1], maze[0][3]);
+    maze[0][3].connections.push(maze[0][2], maze[0][4]);
+    maze[0][4].connections.push(maze[0][3]);
+
+    maze[1][0].connections.push(maze[0][0], maze[2][0]);
+    maze[2][0].connections.push(maze[1][0], maze[3][0]);
+    maze[3][0].connections.push(maze[2][0], maze[4][0]);
+    maze[4][0].connections.push(maze[3][0], maze[4][1]);
+
+    maze[4][1].connections.push(maze[4][0], maze[4][2]);
+    maze[4][2].connections.push(maze[4][1], maze[4][3]);
+    maze[4][3].connections.push(maze[4][2], maze[4][4]);
+    maze[4][4].connections.push(maze[4][3], maze[3][4]);
+
+    maze[3][4].connections.push(maze[4][4], maze[2][4]);
+    maze[2][4].connections.push(maze[3][4], maze[1][4]);
+    maze[1][4].connections.push(maze[2][4], maze[1][3]);
+
+    maze[1][3].connections.push(maze[1][4], maze[1][2]);
+    maze[1][2].connections.push(maze[1][3], maze[1][1]);
+    maze[1][1].connections.push(maze[1][2], maze[2][1]);
+
+    maze[2][1].connections.push(maze[1][1], maze[3][1]);
+    maze[3][1].connections.push(maze[2][1], maze[3][2]);
+    maze[3][2].connections.push(maze[3][1], maze[3][3]);
+
+    maze[3][3].connections.push(maze[3][2], maze[2][3]);
+    maze[2][3].connections.push(maze[3][3], maze[2][2]);
+    maze[2][2].connections.push(maze[2][3]);
+    return maze;
+}
+
 export function generateMazeGraph(sizeX: number, sizeY: number) {
     const maze = generateEmptyGraph(sizeX, sizeY);
     const lcgGenerator = new LcgGenerator(3819201);
