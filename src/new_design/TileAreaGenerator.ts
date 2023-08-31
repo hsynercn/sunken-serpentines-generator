@@ -1,5 +1,5 @@
 import { LcgGenerator } from "./LcgGenerator";
-import { GraphNode } from "./Node";
+import { GraphNode } from "./GraphNode";
 import { Tile } from "./Tile";
 import { TileNode, TileType } from "./TileNode";
 
@@ -25,7 +25,7 @@ export function generateEmptyGraph(
 export function generateEmptyTileGraph(
     sizeX: number,
     sizeY: number,
-    wallType: TileType = TileType.wall,
+    wallType: TileType = TileType.WALL,
 ): TileNode[][] {
     const graph: TileNode[][] = [];
     for (let x = 0; x < sizeX; x++) {
@@ -39,35 +39,59 @@ export function generateEmptyTileGraph(
 
 //export const generator = new LcgGenerator(3819201);
 
-export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, stepDistance: number, frameThickness: number = 1) {
+export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1) {
     const graph = generateMazeGraph(sizeX, sizeY);
-    const tileSizeX = sizeX + (sizeX - 1) * stepDistance + 2 * frameThickness;
-    const tileSizeY = sizeY + (sizeY - 1) * stepDistance + 2 * frameThickness;
+    const tileSizeX = nodeDimension * sizeX + (sizeX - 1) * nodeDistance + 2 * frameThickness;
+    const tileSizeY = nodeDimension * sizeY + (sizeY - 1) * nodeDistance + 2 * frameThickness;
     const tileGraph = generateEmptyTileGraph(tileSizeX, tileSizeY);
-    graph.forEach((column, x) => {
-        column.forEach((node, y) => {
-            const tileCordX = frameThickness + x + stepDistance * x;
-            const tileCordY = frameThickness + y + stepDistance * y;
-            const tileNode = tileGraph[tileCordX][tileCordY];
-            tileNode.tileType = TileType.floor;
-            const hasEastConnection = node.connections.find(connection => connection.x === node.x + 1);
-            const hasSouthConnection = node.connections.find(connection => connection.y === node.y + 1);
-            if(hasEastConnection) {
-                for(let i = 0; i <= stepDistance; i++) {
-                    const tempTile = tileGraph[tileCordX + i][tileCordY];
-                    const nextTile = tileGraph[tileCordX + i + 1][tileCordY];
-                    tempTile.tileType = TileType.floor;
-                    tempTile.connections.push(nextTile);
-                    nextTile.connections.push(tempTile);
+
+    graph.forEach((row, x) => {
+        row.forEach((node, y) => {
+            console.log(`all coordinates node: ${node.x}, ${node.y}`); // TODO: remove this `console.log`
+        }
+    )});
+
+    graph.forEach((row, x) => {
+        row.forEach((node, y) => {
+            const tileCordX = frameThickness + nodeDimension * x + nodeDistance * x;
+            const tileCordY = frameThickness + nodeDimension * y + nodeDistance * y;
+
+            console.log(`coordinates node: ${node.x}, ${node.y}`); // TODO: remove this `console.log`
+
+            for (let i = 0; i < nodeDimension; i++) {
+                for (let j = 0; j < nodeDimension; j++) {
+                    const tempTile = tileGraph[tileCordX + i][tileCordY + j];
+                    console.log(`>>>` + (tileCordX + i) + `,` + (tileCordY + j)); // TODO: remove this `console.log`
+                    tempTile.tileType = TileType.FLOOR;
                 }
             }
+
+            node.connections.forEach(connection => {
+                console.log(`connection: ${connection.x}, ${connection.y}`); // TODO: remove this `console.log`
+            });
+
+            const hasSouthConnection  = node.connections.some(connection => connection.y === node.y && connection.x === (node.x + 1));
+            const hasEastConnection  = node.connections.some(connection => connection.x === node.x && connection.y === (node.y + 1));
+
+            console.log(`hasEastConnection: ${hasEastConnection}`); // TODO: remove this `console.log`
+            console.log(`hasSouthConnection: ${hasSouthConnection}`); // TODO: remove this `console.log`
+            
+            if(hasEastConnection) {
+                for(let i = 0; i < nodeDimension; i++) {
+                    for(let j = 0; j < nodeDistance; j++) {
+                        const tempTile = tileGraph[tileCordX + i][tileCordY + nodeDimension + j];
+                        tempTile.tileType = TileType.FLOOR;
+                    }
+                }
+            }
+            
+            
             if(hasSouthConnection) {
-                for(let i = 0; i <= stepDistance; i++) {
-                    const tempTile = tileGraph[tileCordX][tileCordY + i];
-                    const nextTile = tileGraph[tileCordX][tileCordY + i + 1];
-                    tempTile.tileType = TileType.floor;
-                    tempTile.connections.push(nextTile);
-                    nextTile.connections.push(tempTile);
+                for(let i = 0; i < nodeDistance; i++) {
+                    for(let j = 0; j < nodeDimension; j++) {
+                        const tempTile = tileGraph[tileCordX + nodeDimension + i][tileCordY + j];
+                        tempTile.tileType = TileType.FLOOR;
+                    }
                 }
             }
         });

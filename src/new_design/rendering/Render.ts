@@ -2,7 +2,7 @@ import { createCanvas, loadImage } from "canvas";
 import fs from "fs";
 import { TileNode, TileType } from "../TileNode";
 import { generateEmptyGraph, generateMazeGraph, generateTileMazeWithStepDistance } from "../TileAreaGenerator";
-import { GraphNode } from "../Node";
+import { GraphNode } from "../GraphNode";
 
 const tileSize = 1;
 const wallColor = "lightgray";
@@ -62,7 +62,7 @@ export const renderTileGraph = (tileGraph: TileNode[][]) => {
   tileGraph.forEach((column, x) => {
     column.forEach((node, y) => {
 
-      if(node.tileType === TileType.floor) {
+      if(node.tileType === TileType.FLOOR) {
         ctx.fillStyle = floorColor;
       } else {
         ctx.fillStyle = wallColor;
@@ -111,8 +111,8 @@ export const renderGraph = (maze: GraphNode[][]) => {
 //const area = generateEmptyMazeGraph(2000, 2000);
 //const area = generateMazeGraph(100, 100);
 //renderNodeGraphWithSpacing(area);
-
-const tileGraph = generateTileMazeWithStepDistance(10,10,1,1);
+//sizeX: number, sizeY: number, nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1
+const tileGraph = generateTileMazeWithStepDistance(3,3,3,2,1);
 renderTileGraph(tileGraph);
 
 //const area = generateMaze(10, 10);

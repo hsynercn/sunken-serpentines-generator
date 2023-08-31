@@ -1,5 +1,4 @@
-import { Tile } from "./Tile";
-import { GraphNode } from "./Node";
+import { GraphNode } from "./GraphNode";
 
 export class TileNode extends GraphNode {
   public tileType: TileType;
@@ -11,6 +10,6 @@ export class TileNode extends GraphNode {
 }
 
 export enum TileType {
-  wall = "wall",
-  floor = "floor",
+  WALL = "wall",
+  FLOOR = "floor",
 }
