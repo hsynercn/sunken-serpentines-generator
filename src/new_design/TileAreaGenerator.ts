@@ -47,34 +47,18 @@ export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, n
 
     graph.forEach((row, x) => {
         row.forEach((node, y) => {
-            console.log(`all coordinates node: ${node.x}, ${node.y}`); // TODO: remove this `console.log`
-        }
-    )});
-
-    graph.forEach((row, x) => {
-        row.forEach((node, y) => {
             const tileCordX = frameThickness + nodeDimension * x + nodeDistance * x;
             const tileCordY = frameThickness + nodeDimension * y + nodeDistance * y;
-
-            console.log(`coordinates node: ${node.x}, ${node.y}`); // TODO: remove this `console.log`
 
             for (let i = 0; i < nodeDimension; i++) {
                 for (let j = 0; j < nodeDimension; j++) {
                     const tempTile = tileGraph[tileCordX + i][tileCordY + j];
-                    console.log(`>>>` + (tileCordX + i) + `,` + (tileCordY + j)); // TODO: remove this `console.log`
                     tempTile.tileType = TileType.FLOOR;
                 }
             }
 
-            node.connections.forEach(connection => {
-                console.log(`connection: ${connection.x}, ${connection.y}`); // TODO: remove this `console.log`
-            });
-
             const hasSouthConnection  = node.connections.some(connection => connection.y === node.y && connection.x === (node.x + 1));
             const hasEastConnection  = node.connections.some(connection => connection.x === node.x && connection.y === (node.y + 1));
-
-            console.log(`hasEastConnection: ${hasEastConnection}`); // TODO: remove this `console.log`
-            console.log(`hasSouthConnection: ${hasSouthConnection}`); // TODO: remove this `console.log`
             
             if(hasEastConnection) {
                 for(let i = 0; i < nodeDimension; i++) {
