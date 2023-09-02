@@ -112,7 +112,7 @@ export const renderGraph = (maze: GraphNode[][]) => {
 //const area = generateMazeGraph(100, 100);
 //renderNodeGraphWithSpacing(area);
 //sizeX: number, sizeY: number, nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1
-const tileGraph = generateTileMazeWithStepDistance(3,3,3,2,1);
+const tileGraph = generateTileMazeWithStepDistance(100,3,1,10,1);
 renderTileGraph(tileGraph);
 
 //const area = generateMaze(10, 10);
