@@ -1,8 +1,8 @@
 import { createCanvas, loadImage } from "canvas";
 import fs from "fs";
 import { TileNode, TileType } from "../TileNode";
-import { generateEmptyGraph, generateMazeGraph, generateTileMazeWithStepDistance } from "../TileAreaGenerator";
 import { GraphNode } from "../GraphNode";
+import { generateTileMazeWithStepDistance } from "../TileAreaGenerator";
 
 const tileSize = 1;
 const wallColor = "lightgray";

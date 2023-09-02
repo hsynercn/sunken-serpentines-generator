@@ -4,7 +4,10 @@
   "description": "Tile based map generator",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node out/app.js",
+    "prestart": "npm run build",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",

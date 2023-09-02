@@ -8,7 +8,7 @@ export type NewConnection = {
     previousNode: GraphNode;
 };
 
-export function generateEmptyGraph(
+export function generateEmpty2DGraph(
     sizeX: number,
     sizeY: number
 ): GraphNode[][] {
@@ -21,6 +21,68 @@ export function generateEmptyGraph(
     }
     return graph;
 }
+
+export function generateGridGraph(sizeX: number, sizeY: number, isConnected: boolean): Map<number,Map<number,GraphNode>> {
+    const graph = new Map<number,Map<number,GraphNode>>();
+    for (let x = 0; x < sizeX; x++) {
+        graph.set(x, new Map<number,GraphNode>());
+        for (let y = 0; y < sizeY; y++) {
+            graph.get(x)?.set(y, new GraphNode(x, y));
+        }
+    }
+    if(isConnected) {
+        graph.forEach((row, x) => {
+            row.forEach((node, y) => {
+                const northNode = graph.get(x)?.get(y - 1);
+                const southNode = graph.get(x)?.get(y + 1);
+                const eastNode = graph.get(x + 1)?.get(y);
+                const westNode = graph.get(x - 1)?.get(y);
+                if(northNode) {
+                    node.connections.push(northNode);
+                }
+                if(southNode) {
+                    node.connections.push(southNode);
+                }
+                if(eastNode) {
+                    node.connections.push(eastNode);
+                }
+                if(westNode) {
+                    node.connections.push(westNode);
+                }
+            });
+        });
+    }
+    return graph;
+}
+
+export function replicateGridGraph(graph: Map<number,Map<number,GraphNode>>, keepConnections: boolean = true) {
+    const newGraph = new Map<number,Map<number,GraphNode>>();
+    graph.forEach((row) => {
+        row.forEach((node) => {
+            if(!newGraph.has(node.x)) {
+                newGraph.set(node.x, new Map<number,GraphNode>());
+            }
+            newGraph.get(node.x)?.set(node.y, new GraphNode(node.x, node.y));
+        });
+    });
+    if(keepConnections) {
+        graph.forEach((row) => {
+            row.forEach((node) => {
+                const newNode = newGraph.get(node.x)?.get(node.y);
+                const existingConnections = graph.get(node.x)?.get(node.y)?.connections;
+                existingConnections?.forEach((connection) => {
+                    const connectedNode = newGraph.get(connection.x)?.get(connection.y);
+                    if(connectedNode && newNode) {
+                        newNode.connections.push(connectedNode);
+                    }
+                });
+            });
+        });
+    }
+    return newGraph;
+}
+
+
 
 export function generateEmptyTileGraph(
     sizeX: number,
@@ -40,13 +102,16 @@ export function generateEmptyTileGraph(
 //export const generator = new LcgGenerator(3819201);
 
 export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1) {
-    const graph = generateMazeGraph(sizeX, sizeY);
+    const connectedGraph = generateGridGraph(sizeX, sizeY, true);
+    const graph = generateMazeGraph(connectedGraph);
     const tileSizeX = nodeDimension * sizeX + (sizeX - 1) * nodeDistance + 2 * frameThickness;
     const tileSizeY = nodeDimension * sizeY + (sizeY - 1) * nodeDistance + 2 * frameThickness;
     const tileGraph = generateEmptyTileGraph(tileSizeX, tileSizeY);
 
-    graph.forEach((row, x) => {
-        row.forEach((node, y) => {
+    graph.forEach((row) => {
+        row.forEach((node) => {
+            const x = node.x;
+            const y = node.y;
             const tileCordX = frameThickness + nodeDimension * x + nodeDistance * x;
             const tileCordY = frameThickness + nodeDimension * y + nodeDistance * y;
 
@@ -84,7 +149,7 @@ export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, n
 }
 
 export function createSpiralGraph() {
-    const maze = generateEmptyGraph(5, 5);
+    const maze = generateEmpty2DGraph(5, 5);
     maze[0][0].connections.push(maze[0][1], maze[1][0]);
     maze[0][1].connections.push(maze[0][0], maze[0][2]);
     maze[0][2].connections.push(maze[0][1], maze[0][3]);
@@ -119,18 +184,15 @@ export function createSpiralGraph() {
     return maze;
 }
 
-export function generateMazeGraph(sizeX: number, sizeY: number) {
-    const maze = generateEmptyGraph(sizeX, sizeY);
+export function generateMazeGraph(connectedGraph: Map<number,Map<number,GraphNode>>)  {
+    const maze = replicateGridGraph(connectedGraph, false);
     const lcgGenerator = new LcgGenerator(3819201);
 
     const visitedNodes: Set<GraphNode> = new Set<GraphNode>();
 
-    const randomStartPointX = lcgGenerator.nextInt() % sizeX;
-    const randomStartPointY = lcgGenerator.nextInt() % sizeY;
+    const startNode = connectedGraph.get(0)?.get(0) as GraphNode;
 
     const nodeStack: NewConnection[] = [];
-
-    const startNode = maze[randomStartPointX][randomStartPointY];
 
     const start: NewConnection = {
         node: startNode,
@@ -152,10 +214,11 @@ export function generateMazeGraph(sizeX: number, sizeY: number) {
 
             visitedNodes.add(node);
 
-            const northNode = maze[node.x]?.[node.y - 1];
-            const southNode = maze[node.x]?.[node.y + 1];
-            const eastNode = maze[node.x + 1]?.[node.y];
-            const westNode = maze[node.x - 1]?.[node.y];
+            const northNode = maze.get(node.x)?.get(node.y - 1);
+            const southNode = maze.get(node.x)?.get(node.y + 1);
+            const eastNode = maze.get(node.x + 1)?.get(node.y);
+            const westNode = maze.get(node.x - 1)?.get(node.y);
+            
 
             let unvisitedConNodes: GraphNode[] = [];
             if (northNode && !visitedNodes.has(northNode)) {
