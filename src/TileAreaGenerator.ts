@@ -31,28 +31,32 @@ export function generateGridGraph(sizeX: number, sizeY: number, isConnected: boo
         }
     }
     if(isConnected) {
-        graph.forEach((row, x) => {
-            row.forEach((node, y) => {
-                const northNode = graph.get(x)?.get(y - 1);
-                const southNode = graph.get(x)?.get(y + 1);
-                const eastNode = graph.get(x + 1)?.get(y);
-                const westNode = graph.get(x - 1)?.get(y);
-                if(northNode) {
-                    node.connections.push(northNode);
-                }
-                if(southNode) {
-                    node.connections.push(southNode);
-                }
-                if(eastNode) {
-                    node.connections.push(eastNode);
-                }
-                if(westNode) {
-                    node.connections.push(westNode);
-                }
-            });
-        });
+        connectGridNodes(graph);
     }
     return graph;
+}
+
+export function connectGridNodes(graph: Map<number, Map<number, GraphNode>>) {
+    graph.forEach((row, x) => {
+        row.forEach((node, y) => {
+            const northNode = graph.get(x)?.get(y - 1);
+            const southNode = graph.get(x)?.get(y + 1);
+            const eastNode = graph.get(x + 1)?.get(y);
+            const westNode = graph.get(x - 1)?.get(y);
+            if (northNode) {
+                node.connections.push(northNode);
+            }
+            if (southNode) {
+                node.connections.push(southNode);
+            }
+            if (eastNode) {
+                node.connections.push(eastNode);
+            }
+            if (westNode) {
+                node.connections.push(westNode);
+            }
+        });
+    });
 }
 
 export function replicateGridGraph(graph: Map<number,Map<number,GraphNode>>, keepConnections: boolean = true) {
@@ -82,8 +86,6 @@ export function replicateGridGraph(graph: Map<number,Map<number,GraphNode>>, kee
     return newGraph;
 }
 
-
-
 export function generateEmptyTileGraph(
     sizeX: number,
     sizeY: number,
@@ -101,23 +103,38 @@ export function generateEmptyTileGraph(
 
 //export const generator = new LcgGenerator(3819201);
 
-export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1) {
-    const connectedGraph = generateGridGraph(sizeX, sizeY, true);
-    const graph = generateMazeGraph(connectedGraph);
-    const tileSizeX = nodeDimension * sizeX + (sizeX - 1) * nodeDistance + 2 * frameThickness;
-    const tileSizeY = nodeDimension * sizeY + (sizeY - 1) * nodeDistance + 2 * frameThickness;
-    const tileGraph = generateEmptyTileGraph(tileSizeX, tileSizeY);
+export function findDimensionsOfGraph(connectedGraph: Map<number,Map<number,GraphNode>>) {
+    let sizeX = 0;
+    let sizeY = 0;
+    connectedGraph.forEach((row) => {
+        row.forEach((node) => {
+            if(node.x > sizeX) {
+                sizeX = node.x;
+            }
+            if(node.y > sizeY) {
+                sizeY = node.y;
+            }
+        });
+    });
+    sizeX++;
+    sizeY++;
+    return {sizeX, sizeY};
+}
+
+export function generateTileMazeWithStepDistance(graph: Map<number,Map<number,GraphNode>>, tileGraph: TileNode[][], nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1) {
+
+    const {sizeX, sizeY} = findDimensionsOfGraph(graph);
 
     graph.forEach((row) => {
         row.forEach((node) => {
             const x = node.x;
             const y = node.y;
-            const tileCordX = frameThickness + nodeDimension * x + nodeDistance * x;
-            const tileCordY = frameThickness + nodeDimension * y + nodeDistance * y;
+            const tileLeftTopCordX = frameThickness + nodeDimension * x + nodeDistance * x;
+            const tileLeftTopCordY = frameThickness + nodeDimension * y + nodeDistance * y;
 
             for (let i = 0; i < nodeDimension; i++) {
                 for (let j = 0; j < nodeDimension; j++) {
-                    const tempTile = tileGraph[tileCordX + i][tileCordY + j];
+                    const tempTile = tileGraph[tileLeftTopCordX + i][tileLeftTopCordY + j];
                     tempTile.tileType = TileType.FLOOR;
                 }
             }
@@ -128,23 +145,29 @@ export function generateTileMazeWithStepDistance(sizeX: number, sizeY: number, n
             if(hasEastConnection) {
                 for(let i = 0; i < nodeDimension; i++) {
                     for(let j = 0; j < nodeDistance; j++) {
-                        const tempTile = tileGraph[tileCordX + i][tileCordY + nodeDimension + j];
+                        const tempTile = tileGraph[tileLeftTopCordX + i][tileLeftTopCordY + nodeDimension + j];
                         tempTile.tileType = TileType.FLOOR;
                     }
                 }
             }
-            
-            
             if(hasSouthConnection) {
                 for(let i = 0; i < nodeDistance; i++) {
                     for(let j = 0; j < nodeDimension; j++) {
-                        const tempTile = tileGraph[tileCordX + nodeDimension + i][tileCordY + j];
+                        const tempTile = tileGraph[tileLeftTopCordX + nodeDimension + i][tileLeftTopCordY + j];
                         tempTile.tileType = TileType.FLOOR;
                     }
                 }
             }
         });
     });
+    
+    return tileGraph;
+}
+
+export function createTileArea(nodeDimension: number, sizeX: number, nodeDistance: number, frameThickness: number, sizeY: number) {
+    const tileSizeX = nodeDimension * sizeX + (sizeX - 1) * nodeDistance + 2 * frameThickness;
+    const tileSizeY = nodeDimension * sizeY + (sizeY - 1) * nodeDistance + 2 * frameThickness;
+    const tileGraph = generateEmptyTileGraph(tileSizeX, tileSizeY);
     return tileGraph;
 }
 
