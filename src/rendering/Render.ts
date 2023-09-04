@@ -2,7 +2,7 @@ import { createCanvas, loadImage } from "canvas";
 import fs from "fs";
 import { TileNode, TileType } from "../TileNode";
 import { GraphNode } from "../GraphNode";
-import { connectGridNodes, createTileArea, generateGridGraph, generateMazeGraph, generateTileMazeWithStepDistance } from "../TileAreaGenerator";
+import { connectGridNodes, createTileArea, generateGridGraph, generateMazeGraph, generateTileMazeWithStepDistance, newFunction, resetTileGraph } from "../TileAreaGenerator";
 
 const tileSize = 1;
 const wallColor = "lightgray";
@@ -108,59 +108,29 @@ export const renderGraph = (maze: GraphNode[][]) => {
     console.log('+--'.repeat(sizeY) + '+');
   };
 
-const sizeX = 10;
-const sizeY = 10;
+const sizeX = 20;
+const sizeY = 20;
 const connectedGraph = generateGridGraph(sizeX, sizeY, true);
 const graph = generateMazeGraph(connectedGraph);
 
 const nodeDistance = 19;
 const nodeDimension = 33;
-const frameThickness = 1;
+const frameOffset = 5;
 
-let tileGraph = createTileArea(nodeDimension, sizeX, nodeDistance, frameThickness, sizeY);
-
-tileGraph = generateTileMazeWithStepDistance(graph,tileGraph,nodeDistance,nodeDimension,frameThickness);
+let tileGraph = createTileArea(nodeDimension, sizeX, nodeDistance, frameOffset, sizeY);
+tileGraph = generateTileMazeWithStepDistance(graph,tileGraph,nodeDistance,nodeDimension,frameOffset);
 
 const innerNodeDistance = 1;
 const innerNodeDimension = 1;
-const innerFrameThickness = 0;
 
-//const tileSizeX = nodeDimension * sizeX + (sizeX - 1) * nodeDistance;
-//const tileSizeY = nodeDimension * sizeY + (sizeY - 1) * nodeDistance;
-
-let x = 0;
-let y = 0;
-
-const startOffset = frameThickness;
-let tileLeftTopCordX = startOffset + innerNodeDimension * x + innerNodeDistance * x;
-let tileLeftTopCordY = startOffset + innerNodeDimension * y + innerNodeDistance * y;
-
-const newSkeletonGraphConnected: Map<number,Map<number,GraphNode>> = new Map();
-
-while((tileLeftTopCordX + innerNodeDimension) <= tileGraph.length) {
-  newSkeletonGraphConnected.set(x,new Map());
-  while((tileLeftTopCordY + innerNodeDimension) <= tileGraph[0].length) {
-    
-    //add a node to new graph skeleton
-    if(tileGraph[tileLeftTopCordX][tileLeftTopCordY].tileType === TileType.FLOOR) {
-      newSkeletonGraphConnected.get(x)?.set(y,new GraphNode(x,y));
-    }
-    y++;
-    tileLeftTopCordY = frameThickness + innerNodeDimension * y + innerNodeDistance * y;
-  }
-  x++;
-  tileLeftTopCordX = frameThickness + innerNodeDimension * x + innerNodeDistance * x;
-  y = 0;
-  tileLeftTopCordY = frameThickness + innerNodeDimension * y + innerNodeDistance * y;
-}
+const newSkeletonGraphConnected: Map<number, Map<number, GraphNode>> = newFunction(tileGraph, frameOffset, innerNodeDimension, innerNodeDistance);
 
 connectGridNodes(newSkeletonGraphConnected);
 
-let tileGraph2 = createTileArea(nodeDimension, sizeX, nodeDistance, frameThickness, sizeY);
+resetTileGraph(tileGraph);
 const newSkeletonGraph = generateMazeGraph(newSkeletonGraphConnected);
-tileGraph2 = generateTileMazeWithStepDistance(newSkeletonGraph,tileGraph2,innerNodeDistance,innerNodeDimension,frameThickness);
+tileGraph = generateTileMazeWithStepDistance(newSkeletonGraph,tileGraph,innerNodeDistance,innerNodeDimension,frameOffset);
 
-renderTileGraph(tileGraph2);
+renderTileGraph(tileGraph);
 
-//const area = generateMaze(10, 10);
-//printMaze(area);
+

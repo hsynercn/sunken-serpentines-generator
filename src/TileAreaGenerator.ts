@@ -1,6 +1,5 @@
 import { LcgGenerator } from "./LcgGenerator";
 import { GraphNode } from "./GraphNode";
-import { Tile } from "./Tile";
 import { TileNode, TileType } from "./TileNode";
 
 export type NewConnection = {
@@ -8,29 +7,15 @@ export type NewConnection = {
     previousNode: GraphNode;
 };
 
-export function generateEmpty2DGraph(
-    sizeX: number,
-    sizeY: number
-): GraphNode[][] {
-    const graph: GraphNode[][] = [];
+export function generateGridGraph(sizeX: number, sizeY: number, isConnected: boolean): Map<number, Map<number, GraphNode>> {
+    const graph = new Map<number, Map<number, GraphNode>>();
     for (let x = 0; x < sizeX; x++) {
-        graph[x] = [];
-        for (let y = 0; y < sizeY; y++) {
-            graph[x][y] = new GraphNode(x, y);
-        }
-    }
-    return graph;
-}
-
-export function generateGridGraph(sizeX: number, sizeY: number, isConnected: boolean): Map<number,Map<number,GraphNode>> {
-    const graph = new Map<number,Map<number,GraphNode>>();
-    for (let x = 0; x < sizeX; x++) {
-        graph.set(x, new Map<number,GraphNode>());
+        graph.set(x, new Map<number, GraphNode>());
         for (let y = 0; y < sizeY; y++) {
             graph.get(x)?.set(y, new GraphNode(x, y));
         }
     }
-    if(isConnected) {
+    if (isConnected) {
         connectGridNodes(graph);
     }
     return graph;
@@ -59,24 +44,24 @@ export function connectGridNodes(graph: Map<number, Map<number, GraphNode>>) {
     });
 }
 
-export function replicateGridGraph(graph: Map<number,Map<number,GraphNode>>, keepConnections: boolean = true) {
-    const newGraph = new Map<number,Map<number,GraphNode>>();
+export function replicateGridGraph(graph: Map<number, Map<number, GraphNode>>, keepConnections: boolean = true) {
+    const newGraph = new Map<number, Map<number, GraphNode>>();
     graph.forEach((row) => {
         row.forEach((node) => {
-            if(!newGraph.has(node.x)) {
-                newGraph.set(node.x, new Map<number,GraphNode>());
+            if (!newGraph.has(node.x)) {
+                newGraph.set(node.x, new Map<number, GraphNode>());
             }
             newGraph.get(node.x)?.set(node.y, new GraphNode(node.x, node.y));
         });
     });
-    if(keepConnections) {
+    if (keepConnections) {
         graph.forEach((row) => {
             row.forEach((node) => {
                 const newNode = newGraph.get(node.x)?.get(node.y);
                 const existingConnections = graph.get(node.x)?.get(node.y)?.connections;
                 existingConnections?.forEach((connection) => {
                     const connectedNode = newGraph.get(connection.x)?.get(connection.y);
-                    if(connectedNode && newNode) {
+                    if (connectedNode && newNode) {
                         newNode.connections.push(connectedNode);
                     }
                 });
@@ -101,29 +86,25 @@ export function generateEmptyTileGraph(
     return graph;
 }
 
-//export const generator = new LcgGenerator(3819201);
-
-export function findDimensionsOfGraph(connectedGraph: Map<number,Map<number,GraphNode>>) {
+export function findDimensionsOfGraph(connectedGraph: Map<number, Map<number, GraphNode>>) {
     let sizeX = 0;
     let sizeY = 0;
     connectedGraph.forEach((row) => {
         row.forEach((node) => {
-            if(node.x > sizeX) {
+            if (node.x > sizeX) {
                 sizeX = node.x;
             }
-            if(node.y > sizeY) {
+            if (node.y > sizeY) {
                 sizeY = node.y;
             }
         });
     });
     sizeX++;
     sizeY++;
-    return {sizeX, sizeY};
+    return { sizeX, sizeY };
 }
 
-export function generateTileMazeWithStepDistance(graph: Map<number,Map<number,GraphNode>>, tileGraph: TileNode[][], nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1) {
-
-    const {sizeX, sizeY} = findDimensionsOfGraph(graph);
+export function generateTileMazeWithStepDistance(graph: Map<number, Map<number, GraphNode>>, tileGraph: TileNode[][], nodeDistance: number, nodeDimension: number = 1, frameThickness: number = 1) {
 
     graph.forEach((row) => {
         row.forEach((node) => {
@@ -139,20 +120,20 @@ export function generateTileMazeWithStepDistance(graph: Map<number,Map<number,Gr
                 }
             }
 
-            const hasSouthConnection  = node.connections.some(connection => connection.y === node.y && connection.x === (node.x + 1));
-            const hasEastConnection  = node.connections.some(connection => connection.x === node.x && connection.y === (node.y + 1));
-            
-            if(hasEastConnection) {
-                for(let i = 0; i < nodeDimension; i++) {
-                    for(let j = 0; j < nodeDistance; j++) {
+            const hasSouthConnection = node.connections.some(connection => connection.y === node.y && connection.x === (node.x + 1));
+            const hasEastConnection = node.connections.some(connection => connection.x === node.x && connection.y === (node.y + 1));
+
+            if (hasEastConnection) {
+                for (let i = 0; i < nodeDimension; i++) {
+                    for (let j = 0; j < nodeDistance; j++) {
                         const tempTile = tileGraph[tileLeftTopCordX + i][tileLeftTopCordY + nodeDimension + j];
                         tempTile.tileType = TileType.FLOOR;
                     }
                 }
             }
-            if(hasSouthConnection) {
-                for(let i = 0; i < nodeDistance; i++) {
-                    for(let j = 0; j < nodeDimension; j++) {
+            if (hasSouthConnection) {
+                for (let i = 0; i < nodeDistance; i++) {
+                    for (let j = 0; j < nodeDimension; j++) {
                         const tempTile = tileGraph[tileLeftTopCordX + nodeDimension + i][tileLeftTopCordY + j];
                         tempTile.tileType = TileType.FLOOR;
                     }
@@ -160,54 +141,26 @@ export function generateTileMazeWithStepDistance(graph: Map<number,Map<number,Gr
             }
         });
     });
-    
+
     return tileGraph;
 }
 
-export function createTileArea(nodeDimension: number, sizeX: number, nodeDistance: number, frameThickness: number, sizeY: number) {
-    const tileSizeX = nodeDimension * sizeX + (sizeX - 1) * nodeDistance + 2 * frameThickness;
-    const tileSizeY = nodeDimension * sizeY + (sizeY - 1) * nodeDistance + 2 * frameThickness;
+export function createTileArea(nodeDimension: number, sizeX: number, nodeDistance: number, frameOffset: number, sizeY: number) {
+    const tileSizeX = nodeDimension * sizeX + (sizeX - 1) * nodeDistance + 2 * frameOffset;
+    const tileSizeY = nodeDimension * sizeY + (sizeY - 1) * nodeDistance + 2 * frameOffset;
     const tileGraph = generateEmptyTileGraph(tileSizeX, tileSizeY);
     return tileGraph;
 }
 
-export function createSpiralGraph() {
-    const maze = generateEmpty2DGraph(5, 5);
-    maze[0][0].connections.push(maze[0][1], maze[1][0]);
-    maze[0][1].connections.push(maze[0][0], maze[0][2]);
-    maze[0][2].connections.push(maze[0][1], maze[0][3]);
-    maze[0][3].connections.push(maze[0][2], maze[0][4]);
-    maze[0][4].connections.push(maze[0][3]);
-
-    maze[1][0].connections.push(maze[0][0], maze[2][0]);
-    maze[2][0].connections.push(maze[1][0], maze[3][0]);
-    maze[3][0].connections.push(maze[2][0], maze[4][0]);
-    maze[4][0].connections.push(maze[3][0], maze[4][1]);
-
-    maze[4][1].connections.push(maze[4][0], maze[4][2]);
-    maze[4][2].connections.push(maze[4][1], maze[4][3]);
-    maze[4][3].connections.push(maze[4][2], maze[4][4]);
-    maze[4][4].connections.push(maze[4][3], maze[3][4]);
-
-    maze[3][4].connections.push(maze[4][4], maze[2][4]);
-    maze[2][4].connections.push(maze[3][4], maze[1][4]);
-    maze[1][4].connections.push(maze[2][4], maze[1][3]);
-
-    maze[1][3].connections.push(maze[1][4], maze[1][2]);
-    maze[1][2].connections.push(maze[1][3], maze[1][1]);
-    maze[1][1].connections.push(maze[1][2], maze[2][1]);
-
-    maze[2][1].connections.push(maze[1][1], maze[3][1]);
-    maze[3][1].connections.push(maze[2][1], maze[3][2]);
-    maze[3][2].connections.push(maze[3][1], maze[3][3]);
-
-    maze[3][3].connections.push(maze[3][2], maze[2][3]);
-    maze[2][3].connections.push(maze[3][3], maze[2][2]);
-    maze[2][2].connections.push(maze[2][3]);
-    return maze;
+export function resetTileGraph(tileGraph: TileNode[][]) {
+    tileGraph.forEach((row) => {
+        row.forEach((node) => {
+            node.tileType = TileType.WALL;
+        });
+    });
 }
 
-export function generateMazeGraph(connectedGraph: Map<number,Map<number,GraphNode>>)  {
+export function generateMazeGraph(connectedGraph: Map<number, Map<number, GraphNode>>) {
     const maze = replicateGridGraph(connectedGraph, false);
     const lcgGenerator = new LcgGenerator(3819201);
 
@@ -225,7 +178,7 @@ export function generateMazeGraph(connectedGraph: Map<number,Map<number,GraphNod
     nodeStack.push(start);
 
     while (nodeStack.length > 0) {
-        
+
         const currentMazeNode = nodeStack.pop();
         const node = currentMazeNode?.node as TileNode;
         const previousNode = currentMazeNode?.previousNode as TileNode;
@@ -241,7 +194,7 @@ export function generateMazeGraph(connectedGraph: Map<number,Map<number,GraphNod
             const southNode = maze.get(node.x)?.get(node.y + 1);
             const eastNode = maze.get(node.x + 1)?.get(node.y);
             const westNode = maze.get(node.x - 1)?.get(node.y);
-            
+
 
             let unvisitedConNodes: GraphNode[] = [];
             if (northNode && !visitedNodes.has(northNode)) {
@@ -278,3 +231,32 @@ export function generateMazeGraph(connectedGraph: Map<number,Map<number,GraphNod
 
     return maze;
 }
+
+export function newFunction(tileGraph: TileNode[][] ,frameOffset: number, innerNodeDimension: number, innerNodeDistance: number) {
+    let x = 0;
+    let y = 0;
+  
+    const startOffset = frameOffset;
+    let tileLeftTopCordX = startOffset + innerNodeDimension * x + innerNodeDistance * x;
+    let tileLeftTopCordY = startOffset + innerNodeDimension * y + innerNodeDistance * y;
+  
+    const newSkeletonGraphConnected: Map<number, Map<number, GraphNode>> = new Map();
+  
+    while ((tileLeftTopCordX + innerNodeDimension) <= tileGraph.length) {
+      newSkeletonGraphConnected.set(x, new Map());
+      while ((tileLeftTopCordY + innerNodeDimension) <= tileGraph[0].length) {
+  
+        //add a node to new graph skeleton
+        if (tileGraph[tileLeftTopCordX][tileLeftTopCordY].tileType === TileType.FLOOR) {
+          newSkeletonGraphConnected.get(x)?.set(y, new GraphNode(x, y));
+        }
+        y++;
+        tileLeftTopCordY = frameOffset + innerNodeDimension * y + innerNodeDistance * y;
+      }
+      x++;
+      tileLeftTopCordX = frameOffset + innerNodeDimension * x + innerNodeDistance * x;
+      y = 0;
+      tileLeftTopCordY = frameOffset + innerNodeDimension * y + innerNodeDistance * y;
+    }
+    return newSkeletonGraphConnected;
+  }
