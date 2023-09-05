@@ -232,7 +232,7 @@ export function generateMazeGraph(connectedGraph: Map<number, Map<number, GraphN
     return maze;
 }
 
-export function newFunction(tileGraph: TileNode[][] ,frameOffset: number, innerNodeDimension: number, innerNodeDistance: number) {
+export function extractSkeletonGraph(tileGraph: TileNode[][] ,frameOffset: number, innerNodeDimension: number, innerNodeDistance: number) {
     let x = 0;
     let y = 0;
   
