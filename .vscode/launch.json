@@ -17,6 +17,9 @@
             "smartStep": true,
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
+            ],
+            "runtimeArgs": [
+                "--max-old-space-size=16384"
             ]
         }
     ]

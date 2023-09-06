@@ -109,13 +109,13 @@ export const renderGraph = (maze: GraphNode[][]) => {
   };
 
 const sizeX = 5;
-const sizeY = 5;
+const sizeY = 10;
 const connectedGraph = generateGridGraph(sizeX, sizeY, true);
 const graph = generateMazeGraph(connectedGraph);
 
 
-const nodeDistance =54;
-const nodeDimension = 108;
+const nodeDistance =729;
+const nodeDimension = 729;
 const frameOffset = 5;
 
 
@@ -123,7 +123,11 @@ let tileGraph = createTileArea(nodeDimension, sizeX, nodeDistance, frameOffset, 
 tileGraph = generateTileMazeWithStepDistance(graph,tileGraph,nodeDistance,nodeDimension,frameOffset);
 
 
-tileGraph = addInnerMaze(tileGraph, 9, 18, frameOffset);
+//tileGraph = addInnerMaze(tileGraph, 243, 243, frameOffset);
+//tileGraph = addInnerMaze(tileGraph, 81, 81, frameOffset);
+//tileGraph = addInnerMaze(tileGraph, 27, 27, frameOffset);
+tileGraph = addInnerMaze(tileGraph, 9, 9, frameOffset);
+//tileGraph = addInnerMaze(tileGraph, 3, 3, frameOffset);
 tileGraph = addInnerMaze(tileGraph, 1, 1, frameOffset);
 
 renderTileGraph(tileGraph);
