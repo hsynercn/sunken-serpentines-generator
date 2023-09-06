@@ -260,3 +260,14 @@ export function extractSkeletonGraph(tileGraph: TileNode[][] ,frameOffset: numbe
     }
     return newSkeletonGraphConnected;
   }
+
+  export function addInnerMaze(tileGraph: TileNode[][], innerNodeDistance: number, innerNodeDimension: number, frameOffset: number ) {
+
+    let newSkeletonGraphConnected: Map<number, Map<number, GraphNode>> = extractSkeletonGraph(tileGraph, frameOffset, innerNodeDimension, innerNodeDistance);
+
+    connectGridNodes(newSkeletonGraphConnected);
+
+    resetTileGraph(tileGraph);
+    let newSkeletonGraph = generateMazeGraph(newSkeletonGraphConnected);
+    return generateTileMazeWithStepDistance(newSkeletonGraph,tileGraph,innerNodeDistance,innerNodeDimension,frameOffset);
+  }
