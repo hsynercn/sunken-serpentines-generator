@@ -26,6 +26,8 @@
     "canvas": "^2.11.2"
   },
   "devDependencies": {
-    "@types/node": "^20.5.6"
+    "@types/node": "^20.5.6",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1"
   }
 }

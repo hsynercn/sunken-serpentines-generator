@@ -56,7 +56,7 @@ export function renderNodeGraphWithSpacing(graphNodes: GraphNode [][]) {
     fs.writeFileSync("./image.png", buffer);
 }
 
-export const renderTileGraph = (tileGraph: TileNode[][]) => {
+export const renderTileGraph = (tileGraph: TileNode[][], path: string) => {
   const canvas = createCanvas(tileSize * tileGraph.length, tileSize * tileGraph[0].length);
     const ctx = canvas.getContext("2d");
   tileGraph.forEach((column, x) => {
@@ -73,7 +73,7 @@ export const renderTileGraph = (tileGraph: TileNode[][]) => {
     });
   });
   const buffer = canvas.toBuffer("image/png");
-    fs.writeFileSync("./tile_image.png", buffer);
+    fs.writeFileSync(path, buffer);
 }
 
 export const renderGraph = (maze: GraphNode[][]) => {
@@ -107,29 +107,3 @@ export const renderGraph = (maze: GraphNode[][]) => {
     });
     console.log('+--'.repeat(sizeY) + '+');
   };
-
-const sizeX = 5;
-const sizeY = 10;
-const connectedGraph = generateGridGraph(sizeX, sizeY, true);
-const graph = generateMazeGraph(connectedGraph);
-
-
-const nodeDistance =729;
-const nodeDimension = 729;
-const frameOffset = 5;
-
-
-let tileGraph = createTileArea(nodeDimension, sizeX, nodeDistance, frameOffset, sizeY);
-tileGraph = generateTileMazeWithStepDistance(graph,tileGraph,nodeDistance,nodeDimension,frameOffset);
-
-
-//tileGraph = addInnerMaze(tileGraph, 243, 243, frameOffset);
-//tileGraph = addInnerMaze(tileGraph, 81, 81, frameOffset);
-//tileGraph = addInnerMaze(tileGraph, 27, 27, frameOffset);
-tileGraph = addInnerMaze(tileGraph, 9, 9, frameOffset);
-//tileGraph = addInnerMaze(tileGraph, 3, 3, frameOffset);
-tileGraph = addInnerMaze(tileGraph, 1, 1, frameOffset);
-
-renderTileGraph(tileGraph);
-
-
