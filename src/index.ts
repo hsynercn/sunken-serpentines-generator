@@ -19,7 +19,7 @@ tileGraph = generateTileMazeWithStepDistance(graph,tileGraph,nodeDistance,nodeDi
 //tileGraph = addInnerMaze(tileGraph, 243, 243, frameOffset);
 //tileGraph = addInnerMaze(tileGraph, 81, 81, frameOffset);
 //tileGraph = addInnerMaze(tileGraph, 27, 27, frameOffset);
-tileGraph = addInnerMaze(tileGraph, 9, 9, frameOffset);
+//tileGraph = addInnerMaze(tileGraph, 9, 9, frameOffset);
 //tileGraph = addInnerMaze(tileGraph, 3, 3, frameOffset);
 tileGraph = addInnerMaze(tileGraph, 1, 1, frameOffset);
 
