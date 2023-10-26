@@ -1,14 +1,14 @@
 import { addInnerMaze, createTileArea, generateGridGraph, generateMazeGraph, generateTileMazeWithStepDistance } from "./TileAreaGenerator";
 import { renderTileGraph } from "./rendering/Render";
 
-const sizeX = 5;
-const sizeY = 5;
+const sizeX = 2;
+const sizeY = 2;
 const connectedGraph = generateGridGraph(sizeX, sizeY, true);
 const graph = generateMazeGraph(connectedGraph);
 
 
-const nodeDistance =243;
-const nodeDimension = 243;
+const nodeDistance =81;
+const nodeDimension = 81;
 const frameOffset = 5;
 
 
