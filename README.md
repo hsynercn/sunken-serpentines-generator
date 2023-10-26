@@ -3,6 +3,7 @@ Module for tile based map generation.
 
 TODO
 
+- We have to find a better way to use memory on large areas, current on memory space consumption is limiting the max area creation.
 - We can consider processing LCG output with a hash function to get better random number. It could provide better statistical distribution.
 - We can consider adding random walk like, or limited lenght trees to maze areas to create more organic areas.
 
