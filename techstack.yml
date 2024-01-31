@@ -1,0 +1,111 @@
+repo_name: hsynercn/sunken-serpentines-generator
+report_id: 42fc3d9a3693a7a1daac20a0cca6150f
+version: 0.1
+repo_type: Public
+timestamp: '2024-01-31T10:52:38+00:00'
+requested_by: hsynercn
+provider: github
+branch: main
+detected_tools_count: 8
+tools:
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: hsynercn
+  last_updated_on: 2023-10-01 14:35:30.000000000 Z
+- name: TypeScript
+  description: A superset of JavaScript that compiles to clean JavaScript output
+  website_url: http://www.typescriptlang.org
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1612/bynNY5dJ.jpg
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator
+  detection_source: Repo Metadata
+- name: Node.js
+  description: A platform built on Chrome's JavaScript runtime for easily building
+    fast, scalable network applications
+  website_url: http://nodejs.org/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Frameworks (Full Stack)
+  image_url: https://img.stackshare.io/service/1011/n1JRsFeB_400x400.png
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: Huseyin Can Ercan
+  last_updated_on: 2023-08-06 18:49:56.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator
+  detection_source: Repo Metadata
+- name: npm
+  description: The package manager for JavaScript.
+  website_url: https://www.npmjs.com/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Front End Package Manager
+  image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator/blob/main/package.json
+  detection_source: package.json
+  last_updated_by: Huseyin Can Ercan
+  last_updated_on: 2023-08-06 18:49:56.000000000 Z
+- name: "@types/node"
+  description: TypeScript definitions for Node.js
+  package_url: https://www.npmjs.com/@types/node
+  version: 20.5.6
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15809/default_5e5e8ac63beda29f31f1844df64d4b8247570a66.png
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator/blob/main/package-lock.json
+  detection_source: package.json
+  last_updated_by: hsynercn
+  last_updated_on: 2023-10-01 14:35:30.000000000 Z
+- name: canvas
+  description: Canvas graphics API backed by Cairo
+  package_url: https://www.npmjs.com/canvas
+  version: 2.11.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16664/default_783b9b6c17b863f264c1418b0eb831316f741afd.png
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator/blob/main/package-lock.json
+  detection_source: package.json
+  last_updated_by: Huseyin Can Ercan
+  last_updated_on: 2023-08-27 20:35:58.000000000 Z
+- name: ts-node
+  description: TypeScript execution environment and REPL for node.js
+  package_url: https://www.npmjs.com/ts-node
+  version: 10.9.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15830/default_6743ba96cf149a3c3c68a185199f9705d6eff80e.png
+  detection_source_url: https://github.com/hsynercn/sunken-serpentines-generator/blob/main/package-lock.json
+  detection_source: package.json
+  last_updated_by: hsynercn
+  last_updated_on: 2023-10-01 14:35:30.000000000 Z
